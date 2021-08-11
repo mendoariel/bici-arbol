@@ -3,18 +3,20 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
 import { format } from 'prettier';
 import { from, map, mapTo, Observable, switchMap } from 'rxjs';
+import { AuthService } from 'src/auth/service/auth.service';
 import { UserEntity } from 'src/user/model/user.entity';
 import { UserI } from 'src/user/model/user.interface';
 import { Repository } from 'typeorm';
 
-const bcrypt = require('bcrypt');
+
 
 
 @Injectable()
 export class UserService {
     constructor(
         @InjectRepository(UserEntity)
-        private readonly userRepository: Repository<UserEntity>
+        private readonly userRepository: Repository<UserEntity>,
+        private authService: AuthService
     ){}
 
     create(newUser: UserI):Observable<UserI> {
@@ -39,17 +41,18 @@ export class UserService {
     findAll(options: IPaginationOptions):Observable<Pagination<UserI>> {
         return from(paginate<UserEntity>(this.userRepository, options))
     }
-
-    // refactor to use jwt in next video
-    login(user: UserI): Observable<boolean> {
+    
+    login(user: UserI): Observable<string> {
          return this.findByEmail(user.email).pipe(
             switchMap((foundUser: UserI) => {
                 if(foundUser) {
                     return this.validatePassword(user.password, foundUser.password).pipe(
                         switchMap((matches: boolean) => {
                             if(matches) {
-                                return this.findeOne(foundUser.id).pipe(mapTo(true))
-                            } else {
+                                return this.findeOne(foundUser.id).pipe(
+                                    switchMap((payload: UserI) => this.authService.generateJwt(payload))
+                                )
+                            } else { 
                                 throw new HttpException('Login was not successfull, wrong credentials', HttpStatus.UNAUTHORIZED)
                             }
 
@@ -62,9 +65,7 @@ export class UserService {
          )
     }
 
-    private validatePassword(password: string, storedPasswordHash: string):Observable<any> {
-         return from(bcrypt.compare(password, storedPasswordHash));
-    }
+    
 
     private findByEmail(email: string):Observable<UserI> {
          return from(this.userRepository.findOne({email}, {select: ['id', 'email', 'username','password']}))
@@ -74,9 +75,7 @@ export class UserService {
         return from(this.userRepository.findOne({id}))
     }
 
-    private hashPassword(password: string): Observable<string> {
-        return  from<string>(bcrypt.hash(password, 12))
-    }
+    
 
     private mailExists(email: string):Observable<boolean> {
         return from(this.userRepository.findOne({email})).pipe(
@@ -87,4 +86,14 @@ export class UserService {
             })
         )
     }
+
+    private validatePassword(password: string, storedPasswordHash: string):Observable<any> {
+        return this.authService.passwordCompare(password, storedPasswordHash)
+   }
+
+   private hashPassword(password: string): Observable<string> {
+    return  this.authService.hasPassword(password)
+}
+
+    
 }
