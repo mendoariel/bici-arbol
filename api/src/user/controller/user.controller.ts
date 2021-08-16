@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { Pagination } from 'nestjs-typeorm-paginate';
-import { map, Observable, ObservedValueOf, of, switchMap } from 'rxjs';
+import { Observable, ObservedValueOf } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { CreateUserDto } from '../model/dto/create-user.dto';
 import { LoginUserDto } from '../model/dto/login-user.dto';
