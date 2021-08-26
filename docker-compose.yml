@@ -35,7 +35,7 @@ services:
         command: npm run start
         volumes:
             - ./frontend:/thomas/frontend/src/app
-            - ./thomas/frontend/src/app/node_modules/
+            - /thomas/frontend/src/app/node_modules/
         ports:
             - 4200:4200
         links:
