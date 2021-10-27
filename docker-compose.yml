@@ -1,45 +1,45 @@
 version: "3.3"
 
 services:
-    api:
-        build:
-            dockerfile: Dockerfile
-            context: ./api
-            # Only build development stage from Dockerfile
-            target: development
-            # Mount out host dir to docker container
-            # Mount api directory (./api) to (:) docker container (/thomas/src/app)
-            # Reflect File changes from host to container
-        volumes:
-            - ./api:/thomas/src/app
-            - /thomas/src/app/node_modules/
-        # RUN in debug mode: npm run start:debug --> Also start your vscode debugger
-        # RUN in dev mode: npm run start:dev
-        command: npm run start:debug 
-        depends_on:
-                - postgres
-        environment:
-            DATABASE_URL: postgres://user:password@postgres:5432/db
-            NODE_ENV: development
-            JWT_SECRET: hellomenswahtsowwithyour
-            PORT: 3000
-        ports:
-            - 3000:3000
-            - 9229:9229
+    # api:
+    #     build:
+    #         dockerfile: Dockerfile
+    #         context: ./api
+    #         # Only build development stage from Dockerfile
+    #         target: development
+    #         # Mount out host dir to docker container
+    #         # Mount api directory (./api) to (:) docker container (/thomas/src/app)
+    #         # Reflect File changes from host to container
+    #     volumes:
+    #         - ./api:/thomas/src/app
+    #         - /thomas/src/app/node_modules/
+    #     # RUN in debug mode: npm run start:debug --> Also start your vscode debugger
+    #     # RUN in dev mode: npm run start:dev
+    #     command: npm run start:debug 
+    #     depends_on:
+    #             - postgres
+    #     environment:
+    #         DATABASE_URL: postgres://user:password@postgres:5432/db
+    #         NODE_ENV: development
+    #         JWT_SECRET: hellomenswahtsowwithyour
+    #         PORT: 3000
+    #     ports:
+    #         - 3000:3000
+    #         - 9229:9229
 
-    frontend:
-        build:
-            dockerfile: Dockerfile
-            context: ./frontend
-            target: development
-        command: npm run start
-        volumes:
-            - ./frontend:/thomas/frontend/src/app
-            - ./thomas/frontend/src/app/node_modules/
-        ports:
-            - 4200:4200
-        links:
-            - api
+    # frontend:
+    #     build:
+    #         dockerfile: Dockerfile
+    #         context: ./frontend
+    #         target: development
+    #     command: npm run start
+    #     volumes:
+    #         - ./frontend:/thomas/frontend/src/app
+    #         - ./thomas/frontend/src/app/node_modules/
+    #     ports:
+    #         - 4200:4200
+    #     links:
+    #         - api
     postgres:
         image: postgres:10.4
         environment:
