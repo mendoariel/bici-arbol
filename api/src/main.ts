@@ -11,6 +11,6 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   app.use(express.static(join(process.cwd(), '../client/dist/')));
 
-  await app.listen(3000);
+  await app.listen(3700);
 }
 bootstrap();
