@@ -13,7 +13,11 @@ import { ChatModule } from './chat/chat.module';
     ConfigModule.forRoot({isGlobal: true}),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      url: process.env.DATABASE_URL,
+      host: 'localhost',
+      port: 5432,
+      username: 'mac',
+      password: '1234',
+      database: 'db',
       autoLoadEntities: true,
       synchronize: true
     }),
