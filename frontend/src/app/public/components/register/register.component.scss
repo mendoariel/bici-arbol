@@ -1,8 +1,7 @@
 .container {
     display: flex;
     justify-content: center;
-    margin: 100px;
-    min-width: 350px;
+    min-width: 250px;
 }
 
 .login {
@@ -19,7 +18,7 @@ mat-card {
             mat-form-field {
                 margin-top: 1em;
                 width: 100%;
-                min-width: 300px; 
+                min-width: 250px; 
             }
             
             .button {
