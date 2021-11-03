@@ -35,7 +35,11 @@ AppModule = __decorate([
             config_1.ConfigModule.forRoot({ isGlobal: true }),
             typeorm_1.TypeOrmModule.forRoot({
                 type: 'postgres',
-                url: process.env.DATABASE_URL,
+                host: 'localhost',
+                port: 5432,
+                username: 'mendoariel',
+                password: 'casadesara',
+                database: 'db',
                 autoLoadEntities: true,
                 synchronize: true
             }),
