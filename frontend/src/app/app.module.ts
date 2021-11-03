@@ -38,7 +38,7 @@ export function tokenGetter() {
     MatToolbarModule,
     MatSidenavModule,
     MatListModule,
-    BrowserModule,
+    BrowserModule.withServerTransition({ appId: 'serverApp' }),
     AppRoutingModule,
     HttpClientModule,
     BrowserAnimationsModule,
