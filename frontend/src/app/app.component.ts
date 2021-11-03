@@ -8,7 +8,7 @@ import { Test, TestService } from './services/test-service/test.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'frontend';
+  title = 'Bici - Arbol';
 
   testValue: Observable<Test> = this.serviceTest.getTest();
 

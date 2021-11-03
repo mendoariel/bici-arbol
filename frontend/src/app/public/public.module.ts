@@ -13,13 +13,15 @@ import {MatButtonModule} from '@angular/material/button';
 
 
 import { ReactiveFormsModule } from '@angular/forms';
+import { WellcomeComponent } from './components/wellcome/wellcome.component';
 
 
 
 @NgModule({
   declarations: [
     LoginComponent,
-    RegisterComponent
+    RegisterComponent,
+    WellcomeComponent
   ],
   imports: [
     CommonModule,

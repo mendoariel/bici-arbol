@@ -31,7 +31,7 @@ export class RegisterComponent {
         email: this.email.value,
         password: this.password.value
       }).pipe(
-        tap(() => this.router.navigate(['../login']))
+        tap(() => this.router.navigate(['/public/login']))
       ).subscribe(); 
     }
   }

@@ -1,3 +1,45 @@
-<router-outlet></router-outlet>
+<mat-sidenav-container class="example-container">
+   
+    <mat-sidenav mode="over" #sidenav class="p-3">
+        <mat-list clas="d-flex flex-column" >
+            <mat-list-item>
+                <a class="text-dark" mat-list href="/public/login">Ingresar</a>
+            </mat-list-item>
+            <mat-list-item>
+                <a class="text-dark" mat-list href="/public/register">Registrarse</a>
+            </mat-list-item>
+          </mat-list>
+    </mat-sidenav>
+   
+    <mat-sidenav-content>
+        <mat-toolbar class="bg-success d-flex justify-content-start justify-content-md-between">
+            <ng-container>
+                <button class="d-md-none" mat-icon-button  (click)="sidenav.toggle()">
+                    <mat-icon  class="mr-2 text-white">
+                        menu
+                    </mat-icon>
+                </button>
+               
+                <span class="text-white p-3" style="cursor: pointer;">
+                    <a href="/welcome" class="text-white">Bici - Árbol</a> 
+                </span>
+            </ng-container>
 
-<app-footer></app-footer>
+            <ul  class="d-none d-md-flex  mt-3" style="list-style: none;" >
+                <li>
+                    <a href="/public/login" class="text-white p-2" style="cursor: pointer; font-size: 0.66em;">Ingresar</a>
+                </li>
+                <li>
+                    <a href="/public/register" class="text-white p-2" style="cursor: pointer; font-size: 0.66em;">Registrarse</a>
+                </li>
+            </ul>
+          </mat-toolbar>
+        
+            <router-outlet></router-outlet>
+            <app-footer></app-footer>
+    </mat-sidenav-content>
+ 
+</mat-sidenav-container>
+
+
+

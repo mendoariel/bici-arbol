@@ -12,6 +12,14 @@ import { JwtModule } from '@auth0/angular-jwt';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FooterComponent } from './public/components/footer/footer.component';
+import {MatToolbarModule} from '@angular/material/toolbar';
+import {MatSidenavModule} from '@angular/material/sidenav';
+import {MatIconModule} from '@angular/material/icon';
+import {MatButtonModule} from '@angular/material/button';
+import {MatListModule} from '@angular/material/list';
+
+
+
 
 export function tokenGetter() {
   return localStorage.getItem("bici-arbol_app");
@@ -25,6 +33,11 @@ export function tokenGetter() {
     FooterComponent
   ],
   imports: [
+    MatButtonModule,
+    MatIconModule,
+    MatToolbarModule,
+    MatSidenavModule,
+    MatListModule,
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
