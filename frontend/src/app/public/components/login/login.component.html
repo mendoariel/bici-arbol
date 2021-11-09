@@ -4,29 +4,40 @@
             <a style="font-size: 0.8em;" [routerLink]="['../register']">Registrate</a>
         </div>
         <div>
-            <mat-card>
+            <mat-card class="d-flex flex-column jusitfy-content-center align-items-center">
                 <mat-card-title>Ingresar</mat-card-title>
 
-                <mat-card-content>
-                    <form [formGroup]="form" (ngSubmit)="login() ">
-                         
-                          <mat-form-field>
-                              <input type="email" matInput placeholder="Email" formControlName="email">
-                               <mat-error *ngIf="email.touched && email.hasError('required')">Campo obligatorio</mat-error>
-                              <mat-error *ngIf="email.touched && email.hasError('email')">Email inválido</mat-error>
-                          </mat-form-field>
-                          
-                          <mat-form-field>
-                              <input type="password" matInput placeholder="Contraseña" formControlName="password">
-                              <mat-error *ngIf="password.touched && password.hasError('required')">Campo obligatorio</mat-error>
-                          </mat-form-field>
-                         
-                          <mat-hint *ngIf="!form.valid">
-                              <small>Por favor complete toda la información</small>                          </mat-hint>
+                <mat-spinner *ngIf="spinner" style="min-width: 250px;" class="spinner m-5 p-5"></mat-spinner>
 
-                          <div class="button">
-                              <button mat-button type="submit" [disabled]="!form.valid">Ingresar</button>
-                          </div>
+                <mat-card-content *ngIf="!spinner">
+                    <form [formGroup]="form" (ngSubmit)="login() ">
+
+                        <mat-form-field>
+                            <input type="email" matInput placeholder="Email" formControlName="email">
+                            <mat-error *ngIf="email.touched && email.hasError('required')">Campo obligatorio</mat-error>
+                            <mat-error *ngIf="email.touched && email.hasError('email')">Email inválido</mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field>
+                            <input type="password" matInput placeholder="Contraseña" formControlName="password">
+                            <mat-error *ngIf="password.touched && password.hasError('required')">Campo obligatorio
+                            </mat-error>
+                        </mat-form-field>
+
+                        <mat-hint *ngIf="!form.valid">
+                            <small>Por favor complete toda la información</small>
+                        </mat-hint>
+
+                        <mat-error *ngIf="dontCredentials">
+                            Revise sus datos
+                        </mat-error>
+                        <mat-error *ngIf="serviceFailed">
+                            Servicio sin respuesta - Intente más tarde
+                        </mat-error>
+
+                        <div class="button">
+                            <button mat-button type="submit" [disabled]="!form.valid">Ingresar</button>
+                        </div>
                     </form>
                 </mat-card-content>
             </mat-card>

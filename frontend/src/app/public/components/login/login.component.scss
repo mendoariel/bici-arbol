@@ -1,7 +1,6 @@
 .container {
     display: flex;
     justify-content: center;
-    min-width: 250px;
 }
 
 
@@ -26,4 +25,9 @@ mat-card {
         }
         
     }
+}
+
+mat-spinner {
+    margin-left: 67.5% !important;
+    margin-bottom: 6em !important;
 }

@@ -9,6 +9,7 @@ import {MatCardModule} from '@angular/material/card';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 
 
@@ -21,7 +22,8 @@ import { WellcomeComponent } from './components/wellcome/wellcome.component';
   declarations: [
     LoginComponent,
     RegisterComponent,
-    WellcomeComponent
+    WellcomeComponent,
+
   ],
   imports: [
     CommonModule,
@@ -30,7 +32,8 @@ import { WellcomeComponent } from './components/wellcome/wellcome.component';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule
+    MatButtonModule,
+    MatProgressSpinnerModule
   ]
 })
 export class PublicModule { }

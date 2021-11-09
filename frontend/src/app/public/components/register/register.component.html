@@ -7,7 +7,9 @@
             <mat-card>
                 <mat-card-title>Registrarse</mat-card-title>
 
-                <mat-card-content>
+                <mat-spinner *ngIf="spinner" style="min-width: 250px;" class="spinner m-5 p-5"></mat-spinner>
+
+                <mat-card-content *ngIf="!spinner">
                     <form [formGroup]="form" (ngSubmit)="register() ">
                          
                           <mat-form-field>

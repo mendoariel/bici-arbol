@@ -18,12 +18,12 @@ import { join } from 'path';
     ConfigModule.forRoot({isGlobal: true}),
     TypeOrmModule.forRoot({
       type: 'postgres',
-       //url: process.env.DATABASE_URL,
-      host: 'localhost',
-      port: 5432,
-      username: 'mendoariel',
-      password: 'casadesara',
-      database: 'db',
+      url: process.env.DATABASE_URL,
+      // host: 'localhost',
+      // port: 5432,
+      // username: 'mendoariel',
+      // password: 'casadesara',
+      // database: 'db',
       autoLoadEntities: true,
       synchronize: true
     }),

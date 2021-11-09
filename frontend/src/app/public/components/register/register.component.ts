@@ -11,6 +11,7 @@ import { CustomValidators } from '../../_helpers/custom-validators';
   styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent {
+  spinner: boolean = false;
 
   form: FormGroup = new FormGroup(
     {
@@ -26,13 +27,20 @@ export class RegisterComponent {
 
   register() {
     if(this.form.valid) {
+      this.spinner = true;
       this.userService.create({
         username: this.username.value,
         email: this.email.value,
         password: this.password.value
-      }).pipe(
-        tap(() => this.router.navigate(['/public/login']))
-      ).subscribe(); 
+      }).subscribe(
+        res => {
+          this.spinner = false;
+          this.router.navigate(['/public/login'])
+        },
+        err => {
+          this.spinner = false;
+        }
+      ); 
     }
   }
 

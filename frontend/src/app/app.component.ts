@@ -1,7 +1,5 @@
  import { Component } from '@angular/core';
-import { Observable } from 'rxjs';
-import { Test, TestService } from './services/test-service/test.service';
-
+import { AuthService } from './public/services/auth-service/auth.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -10,7 +8,17 @@ import { Test, TestService } from './services/test-service/test.service';
 export class AppComponent {
   title = 'Bici - Arbol';
 
-  testValue: Observable<Test> = this.serviceTest.getTest();
+  constructor(private authService: AuthService) {}
 
-  constructor(private serviceTest: TestService) {}
+  isLogin() {
+    if(this.authService.isLogin()) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  logout() {
+    this.authService.logout()
+  }
 }
