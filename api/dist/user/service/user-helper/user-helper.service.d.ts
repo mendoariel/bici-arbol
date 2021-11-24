@@ -4,5 +4,8 @@ import { LoginUserDto } from 'src/user/model/dto/login-user.dto';
 import { UserI } from 'src/user/model/user.interface';
 export declare class UserHelperService {
     createUserDtoEntity(createUserDto: CreateUserDto): Observable<UserI>;
-    loginUserDto(loginUserDto: LoginUserDto): Observable<UserI>;
+    loginUserDto(loginUserDto: LoginUserDto): Promise<{
+        email: string;
+        password: string;
+    }>;
 }

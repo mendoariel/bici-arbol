@@ -8,22 +8,19 @@ import { UserI } from 'src/user/model/user.interface';
 @Injectable()
 export class UserHelperService {
     createUserDtoEntity(createUserDto: CreateUserDto):Observable<UserI> {
-        
-        
-    
         return of({
             email: createUserDto.email,
             username: createUserDto.username,
             password: createUserDto.password,
             recoveryPasswordToken: 'gato',
             passTokenExpire: 'perro'
-        })
+        });
     }
 
-    loginUserDto(loginUserDto: LoginUserDto):Observable<UserI> {
-        return of({
+    async loginUserDto(loginUserDto: LoginUserDto) {
+        return {
             email: loginUserDto.email,
             password: loginUserDto.password
-        })
+        }
     }
 }

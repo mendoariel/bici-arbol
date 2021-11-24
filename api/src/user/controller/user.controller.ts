@@ -35,25 +35,43 @@ export class UserController {
         return this.userService.findAll({page, limit, route: 'http://localhost:3000/api/users'});
     }
 
-    // @Post('login')
-    // login(@Body() loginUserDto: LoginUserDto): Observable<LoginResponseI> {
-    //     return this.userHelperService.loginUserDto(loginUserDto).pipe(
-    //         switchMap((user: UserI) => this.userService.login(user).pipe(
-    //             map((jwt: string) => {
+    @Post('login')
+    async login(@Body() loginUserDto: LoginUserDto) {
+
+        let userDto = await this.userHelperService.loginUserDto(loginUserDto);
+
+
+        const loginF = this.userService.login(userDto);
+        loginF.then(res => console.log('from user controller ====>>>',res));
+
+        // return this.userHelperService.loginUserDto(loginUserDto).pipe(
+        //     switchMap((user: UserI) => this.userService.login(user).pipe(
+        //         map((jwt: string) => {
                     
-    //                 return {
-    //                     access_token: jwt,
-    //                     token_type: 'JWT',
-    //                     expires_in: 10000
-    //                 }
-    //             })
-    //         ))
-    //     )
-    // }
+        //             return {
+        //                 access_token: jwt,
+        //                 token_type: 'JWT',
+        //                 expires_in: 10000
+        //             }
+        //         })
+        //     ))
+        // )
+    }
 
     @Post('password-recovery')
-    passwordRecovery(@Body() user: UserI) {
-        this.userService.passwordRecovery(user).then(res => console.log(res));
+    async passwordRecovery(@Body() user: UserI) {
+        let userResponse;
+        
+        const userF = this.userService.passwordRecovery(user);
+
+        await userF.then(res => {
+            userResponse = res;
+            console.log('from user controller ======> ', userResponse);
+            //return userResponse.UserEntity;
+        });
+
+        return userResponse;
+
     }
 
 

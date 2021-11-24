@@ -22,11 +22,11 @@ let UserHelperService = class UserHelperService {
             passTokenExpire: 'perro'
         });
     }
-    loginUserDto(loginUserDto) {
-        return rxjs_1.of({
+    async loginUserDto(loginUserDto) {
+        return {
             email: loginUserDto.email,
             password: loginUserDto.password
-        });
+        };
     }
 };
 UserHelperService = __decorate([

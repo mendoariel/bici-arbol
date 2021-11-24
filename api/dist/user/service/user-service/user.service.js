@@ -47,9 +47,16 @@ let UserService = class UserService {
     findAll(options) {
         return rxjs_1.from(nestjs_typeorm_paginate_1.paginate(this.userRepository, options));
     }
+    async login(user) {
+        await this.findByEmail(user.email).then(res => console.log('from login service =====> ', res));
+    }
     async passwordRecovery(user) {
         let foundUser;
-        return this.findByEmail(user.email);
+        await this.findByEmail(user.email).then(res => {
+            console.log('into user service password recovery method ====> ', res);
+            foundUser = res;
+        });
+        return foundUser;
     }
     generateString(length) {
         const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

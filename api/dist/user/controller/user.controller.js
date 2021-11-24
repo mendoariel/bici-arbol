@@ -18,6 +18,7 @@ const rxjs_1 = require("rxjs");
 const operators_1 = require("rxjs/operators");
 const jwt_guard_1 = require("../../auth/guards/jwt.guard");
 const create_user_dto_1 = require("../model/dto/create-user.dto");
+const login_user_dto_1 = require("../model/dto/login-user.dto");
 const user_helper_service_1 = require("../service/user-helper/user-helper.service");
 const user_service_1 = require("../service/user-service/user.service");
 let UserController = class UserController {
@@ -32,8 +33,19 @@ let UserController = class UserController {
         limit = limit > 100 ? 100 : limit;
         return this.userService.findAll({ page, limit, route: 'http://localhost:3000/api/users' });
     }
-    passwordRecovery(user) {
-        this.userService.passwordRecovery(user).then(res => console.log(res));
+    async login(loginUserDto) {
+        let userDto = await this.userHelperService.loginUserDto(loginUserDto);
+        const loginF = this.userService.login(userDto);
+        loginF.then(res => console.log('from user controller ====>>>', res));
+    }
+    async passwordRecovery(user) {
+        let userResponse;
+        const userF = this.userService.passwordRecovery(user);
+        await userF.then(res => {
+            userResponse = res;
+            console.log('from user controller ======> ', userResponse);
+        });
+        return userResponse;
     }
 };
 __decorate([
@@ -52,11 +64,18 @@ __decorate([
     __metadata("design:returntype", rxjs_1.Observable)
 ], UserController.prototype, "findAll", null);
 __decorate([
+    common_1.Post('login'),
+    __param(0, common_1.Body()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [login_user_dto_1.LoginUserDto]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "login", null);
+__decorate([
     common_1.Post('password-recovery'),
     __param(0, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], UserController.prototype, "passwordRecovery", null);
 UserController = __decorate([
     common_1.Controller('users'),

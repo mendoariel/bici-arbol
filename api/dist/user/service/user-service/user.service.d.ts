@@ -12,7 +12,8 @@ export declare class UserService {
     constructor(userRepository: Repository<UserEntity>, authService: AuthService, mailService: MailService);
     create(newUser: UserI): Observable<UserI>;
     findAll(options: IPaginationOptions): Observable<Pagination<UserI>>;
-    passwordRecovery(user: UserI): Promise<UserEntity>;
+    login(user: UserI): Promise<void>;
+    passwordRecovery(user: UserI): Promise<UserI>;
     generateString(length: any): string;
     findByEmail(email: string): Promise<UserEntity>;
     private findeOne;

@@ -47,33 +47,44 @@ export class UserService {
         return from(paginate<UserEntity>(this.userRepository, options))
     }
 
-    // login(user: UserI): Observable<string> {
-    //     return this.findByEmail(user.email).pipe(
-    //         switchMap((foundUser: UserI) => {
-    //             if (foundUser) {
-    //                 return this.validatePassword(user.password, foundUser.password).pipe(
-    //                     switchMap((matches: boolean) => {
-    //                         if (matches) {
-    //                             return this.findeOne(foundUser.id).pipe(
-    //                                 switchMap((payload: UserI) => this.authService.generateJwt(payload))
-    //                             )
-    //                         } else {
-    //                             throw new HttpException('Login was not successfull, wrong credentials', HttpStatus.UNAUTHORIZED)
-    //                         }
+    async login(user: UserI) {
+        await this.findByEmail(user.email)
+            .then(res => console.log('from login service =====> ', res))
+            .catch(throw new HttpException('User not found', HttpStatus.NOT_FOUND));
 
-    //                     })
-    //                 )
-    //             } else {
-    //                 throw new HttpException('User not found', HttpStatus.NOT_FOUND)
-    //             }
-    //         })
-    //     )
-    // }
+      
+
+        // return this.findByEmail(user.email).pipe(
+        //     switchMap((foundUser: UserI) => {
+        //         if (foundUser) {
+        //             return this.validatePassword(user.password, foundUser.password).pipe(
+        //                 switchMap((matches: boolean) => {
+        //                     if (matches) {
+        //                         return this.findeOne(foundUser.id).pipe(
+        //                             switchMap((payload: UserI) => this.authService.generateJwt(payload))
+        //                         )
+        //                     } else {
+        //                         throw new HttpException('Login was not successfull, wrong credentials', HttpStatus.UNAUTHORIZED)
+        //                     }
+
+        //                 })
+        //             )
+        //         } else {
+        //             throw new HttpException('User not found', HttpStatus.NOT_FOUND)
+        //         }
+        //     })
+        // )
+    }
 
     async passwordRecovery(user: UserI) {
         let foundUser: UserI;
         
-        return this.findByEmail(user.email);
+        await this.findByEmail(user.email).then(res => {
+            console.log('into user service password recovery method ====> ', res);
+            foundUser = res;
+        });
+
+        return foundUser;
 
         // let token;
         // let date;
