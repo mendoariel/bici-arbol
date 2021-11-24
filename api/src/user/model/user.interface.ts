@@ -2,5 +2,7 @@
     id?: number;
     username?: string;
     email?: string;
-    password?: string; 
+    password?: string;
+    recoveryPasswordToken?: string;
+    passTokenExpire?: string;
  }  

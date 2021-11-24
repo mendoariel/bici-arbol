@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import { IS_EMAIL } from 'class-validator';
 import { Pagination } from 'nestjs-typeorm-paginate';
-import { Observable, ObservedValueOf } from 'rxjs';
+import { BehaviorSubject, from, Observable, ObservedValueOf, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { CreateUserDto } from '../model/dto/create-user.dto';
@@ -34,20 +35,25 @@ export class UserController {
         return this.userService.findAll({page, limit, route: 'http://localhost:3000/api/users'});
     }
 
-    @Post('login')
-    login(@Body() loginUserDto: LoginUserDto): Observable<LoginResponseI> {
-        return this.userHelperService.loginUserDto(loginUserDto).pipe(
-            switchMap((user: UserI) => this.userService.login(user).pipe(
-                map((jwt: string) => {
+    // @Post('login')
+    // login(@Body() loginUserDto: LoginUserDto): Observable<LoginResponseI> {
+    //     return this.userHelperService.loginUserDto(loginUserDto).pipe(
+    //         switchMap((user: UserI) => this.userService.login(user).pipe(
+    //             map((jwt: string) => {
                     
-                    return {
-                        access_token: jwt,
-                        token_type: 'JWT',
-                        expires_in: 10000
-                    }
-                })
-            ))
-        )
+    //                 return {
+    //                     access_token: jwt,
+    //                     token_type: 'JWT',
+    //                     expires_in: 10000
+    //                 }
+    //             })
+    //         ))
+    //     )
+    // }
+
+    @Post('password-recovery')
+    passwordRecovery(@Body() user: UserI) {
+        this.userService.passwordRecovery(user).then(res => console.log(res));
     }
 
 

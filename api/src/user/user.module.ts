@@ -5,11 +5,13 @@ import { UserEntity } from './model/user.entity';
 import { UserService } from './service/user-service/user.service';
 import { UserHelperService } from './service/user-helper/user-helper.service';
 import { AuthModule } from 'src/auth/auth.module';
+import { MailModule } from 'src/mail/mail.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([UserEntity]),
-    AuthModule
+    AuthModule,
+    MailModule
   ],
   controllers: [UserController],
   providers: [UserService, UserHelperService],

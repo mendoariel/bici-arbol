@@ -22,12 +22,16 @@ const auth_service_1 = require("../../../auth/service/auth.service");
 const user_entity_1 = require("../../model/user.entity");
 const user_interface_1 = require("../../model/user.interface");
 const typeorm_2 = require("typeorm");
+const mail_service_1 = require("../../../mail/services/mail.service");
 let UserService = class UserService {
-    constructor(userRepository, authService) {
+    constructor(userRepository, authService, mailService) {
         this.userRepository = userRepository;
         this.authService = authService;
+        this.mailService = mailService;
     }
     create(newUser) {
+        console.log('into create user service');
+        console.log(newUser);
         return this.mailExists(newUser.email).pipe(operators_1.switchMap((exists) => {
             if (!exists) {
                 return this.hashPassword(newUser.password).pipe(operators_1.switchMap((passwordHash) => {
@@ -43,25 +47,21 @@ let UserService = class UserService {
     findAll(options) {
         return rxjs_1.from(nestjs_typeorm_paginate_1.paginate(this.userRepository, options));
     }
-    login(user) {
-        return this.findByEmail(user.email).pipe(operators_1.switchMap((foundUser) => {
-            if (foundUser) {
-                return this.validatePassword(user.password, foundUser.password).pipe(operators_1.switchMap((matches) => {
-                    if (matches) {
-                        return this.findeOne(foundUser.id).pipe(operators_1.switchMap((payload) => this.authService.generateJwt(payload)));
-                    }
-                    else {
-                        throw new common_1.HttpException('Login was not successfull, wrong credentials', common_1.HttpStatus.UNAUTHORIZED);
-                    }
-                }));
-            }
-            else {
-                throw new common_1.HttpException('User not found', common_1.HttpStatus.NOT_FOUND);
-            }
-        }));
+    async passwordRecovery(user) {
+        let foundUser;
+        return this.findByEmail(user.email);
     }
-    findByEmail(email) {
-        return rxjs_1.from(this.userRepository.findOne({ email }, { select: ['id', 'email', 'username', 'password'] }));
+    generateString(length) {
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let result = ' ';
+        const charactersLength = characters.length;
+        for (let i = 0; i < length; i++) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
+    }
+    async findByEmail(email) {
+        return this.userRepository.findOne({ email }, { select: ['id', 'email', 'username', 'password'] });
     }
     findeOne(id) {
         return rxjs_1.from(this.userRepository.findOne({ id }));
@@ -89,7 +89,8 @@ UserService = __decorate([
     common_1.Injectable(),
     __param(0, typeorm_1.InjectRepository(user_entity_1.UserEntity)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
-        auth_service_1.AuthService])
+        auth_service_1.AuthService,
+        mail_service_1.MailService])
 ], UserService);
 exports.UserService = UserService;
 //# sourceMappingURL=user.service.js.map

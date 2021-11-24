@@ -14,13 +14,15 @@ const user_entity_1 = require("./model/user.entity");
 const user_service_1 = require("./service/user-service/user.service");
 const user_helper_service_1 = require("./service/user-helper/user-helper.service");
 const auth_module_1 = require("../auth/auth.module");
+const mail_module_1 = require("../mail/mail.module");
 let UserModule = class UserModule {
 };
 UserModule = __decorate([
     common_1.Module({
         imports: [
             typeorm_1.TypeOrmModule.forFeature([user_entity_1.UserEntity]),
-            auth_module_1.AuthModule
+            auth_module_1.AuthModule,
+            mail_module_1.MailModule
         ],
         controllers: [user_controller_1.UserController],
         providers: [user_service_1.UserService, user_helper_service_1.UserHelperService],

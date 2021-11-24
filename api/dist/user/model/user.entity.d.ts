@@ -4,6 +4,8 @@ export declare class UserEntity {
     username: string;
     email: string;
     password: string;
+    recoveryPasswordToken: string;
+    passTokenExpire: string;
     rooms: RoomEntity[];
     emailToLowerCase(): void;
 }

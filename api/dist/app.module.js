@@ -18,11 +18,12 @@ const auth_middleware_1 = require("./middleware/auth.middleware");
 const chat_module_1 = require("./chat/chat.module");
 const serve_static_1 = require("@nestjs/serve-static");
 const path_1 = require("path");
+const mail_module_1 = require("./mail/mail.module");
 let AppModule = class AppModule {
     configure(consumer) {
         consumer
             .apply(auth_middleware_1.AuthMiddleware)
-            .exclude({ path: '/api/users', method: common_1.RequestMethod.POST }, { path: '/api/users/login', method: common_1.RequestMethod.POST })
+            .exclude({ path: '/api/users', method: common_1.RequestMethod.POST }, { path: '/api/users/login', method: common_1.RequestMethod.POST }, { path: '/api/users/password-recovery', method: common_1.RequestMethod.POST })
             .forRoutes('');
     }
 };
@@ -41,7 +42,8 @@ AppModule = __decorate([
             }),
             user_module_1.UserModule,
             auth_module_1.AuthModule,
-            chat_module_1.ChatModule
+            chat_module_1.ChatModule,
+            mail_module_1.MailModule
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

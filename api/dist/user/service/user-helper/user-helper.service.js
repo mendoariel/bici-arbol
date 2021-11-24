@@ -17,7 +17,9 @@ let UserHelperService = class UserHelperService {
         return rxjs_1.of({
             email: createUserDto.email,
             username: createUserDto.username,
-            password: createUserDto.password
+            password: createUserDto.password,
+            recoveryPasswordToken: 'gato',
+            passTokenExpire: 'perro'
         });
     }
     loginUserDto(loginUserDto) {

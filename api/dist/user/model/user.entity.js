@@ -34,6 +34,14 @@ __decorate([
     __metadata("design:type", String)
 ], UserEntity.prototype, "password", void 0);
 __decorate([
+    typeorm_1.Column({ select: false }),
+    __metadata("design:type", String)
+], UserEntity.prototype, "recoveryPasswordToken", void 0);
+__decorate([
+    typeorm_1.Column({ select: false }),
+    __metadata("design:type", String)
+], UserEntity.prototype, "passTokenExpire", void 0);
+__decorate([
     typeorm_1.ManyToMany(() => room_entity_1.RoomEntity, room => room.users),
     __metadata("design:type", Array)
 ], UserEntity.prototype, "rooms", void 0);

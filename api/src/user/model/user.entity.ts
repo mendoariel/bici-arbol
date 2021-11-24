@@ -16,6 +16,13 @@ export class UserEntity {
     @Column({ select: false })
     password: string;
 
+    @Column({ select: false })
+    recoveryPasswordToken: string;
+
+    @Column({ select: false })
+    passTokenExpire: string;
+
+
     @ManyToMany(() => RoomEntity, room => room.users)
     rooms: RoomEntity[];
 
@@ -23,5 +30,9 @@ export class UserEntity {
     emailToLowerCase() {
         this.email = this.email.toLocaleLowerCase();
     }
+
+   
+
+
 
 }

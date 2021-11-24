@@ -9,6 +9,7 @@ import { AuthMiddleware } from './middleware/auth.middleware';
 import { ChatModule } from './chat/chat.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -29,7 +30,8 @@ import { join } from 'path';
     }),
     UserModule,
     AuthModule,
-    ChatModule
+    ChatModule,
+    MailModule
   ],
   controllers: [AppController],
   providers: [AppService],
@@ -40,7 +42,8 @@ export class AppModule implements NestModule {
       .apply(AuthMiddleware)
       .exclude(
         {path: '/api/users', method: RequestMethod.POST},
-        {path: '/api/users/login', method: RequestMethod.POST}
+        {path: '/api/users/login', method: RequestMethod.POST},
+        {path: '/api/users/password-recovery', method: RequestMethod.POST}
       )
       .forRoutes('')
   }
