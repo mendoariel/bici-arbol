@@ -12,21 +12,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
-const rxjs_1 = require("rxjs");
 const user_interface_1 = require("../../user/model/user.interface");
 const bcrypt = require('bcrypt');
 let AuthService = class AuthService {
     constructor(jwtService) {
         this.jwtService = jwtService;
     }
-    generateJwt(user) {
-        return rxjs_1.from(this.jwtService.signAsync({ user }));
+    async generateJwt(user) {
+        return this.jwtService.signAsync({ user });
     }
-    hasPassword(password) {
-        return rxjs_1.from(bcrypt.hash(password, 12));
+    async hasPassword(password) {
+        return (bcrypt.hash(password, 12));
     }
-    passwordCompare(password, storedPasswordHash) {
-        return rxjs_1.from(bcrypt.compare(password, storedPasswordHash));
+    async passwordCompare(password, storedPasswordHash) {
+        return bcrypt.compare(password, storedPasswordHash);
     }
     verifyJwt(jwt) {
         return this.jwtService.verifyAsync(jwt);

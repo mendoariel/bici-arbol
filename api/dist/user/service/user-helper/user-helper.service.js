@@ -8,21 +8,20 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserHelperService = void 0;
 const common_1 = require("@nestjs/common");
-const rxjs_1 = require("rxjs");
 const create_user_dto_1 = require("../../model/dto/create-user.dto");
 const login_user_dto_1 = require("../../model/dto/login-user.dto");
 const user_interface_1 = require("../../model/user.interface");
 let UserHelperService = class UserHelperService {
     createUserDtoEntity(createUserDto) {
-        return rxjs_1.of({
+        return {
             email: createUserDto.email,
             username: createUserDto.username,
             password: createUserDto.password,
             recoveryPasswordToken: 'gato',
             passTokenExpire: 'perro'
-        });
+        };
     }
-    async loginUserDto(loginUserDto) {
+    loginUserDto(loginUserDto) {
         return {
             email: loginUserDto.email,
             password: loginUserDto.password

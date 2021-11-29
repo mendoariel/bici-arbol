@@ -22,58 +22,45 @@ export class UserService {
         private mailService: MailService
     ) { }
 
-    create(newUser: UserI): Observable<UserI> {
-        console.log('into create user service');
-        console.log(newUser);
-        return this.mailExists(newUser.email).pipe(
-            switchMap((exists: boolean) => {
-                if (!exists) {
-                    return this.hashPassword(newUser.password).pipe(
-                        switchMap((passwordHash: string) => {
-                            newUser.password = passwordHash;
-                            return from(this.userRepository.save(newUser)).pipe(
-                                switchMap((user: UserI) => this.findeOne(user.id))
-                            );
-                        })
-                    )
+    async create(newUser: UserI): Promise<UserI> {
+        try {
+            const exist = await this.mailExists(newUser.email);
+            if(!exist) {
+                const passwordHash = await this.hashPassword(newUser.password);
+                newUser.password = passwordHash;
+                const user = await this.userRepository.save(this.userRepository.create(newUser));
+                return this.findeOne(user.id);
+            } else {
+                throw new HttpException('Email is already in use', HttpStatus.CONFLICT)
+            }
+        } catch {
+            throw new HttpException('Email is already in use', HttpStatus.CONFLICT)
+        }
+    }
+
+    async findAll(options: IPaginationOptions): Promise<Pagination<UserI>> {
+        return paginate<UserEntity>(this.userRepository, options)
+    }
+
+    async login(user: UserI):Promise<string> {
+        try {
+            const foundUser: UserI = await this.findByEmail(user.email.toLocaleLowerCase());
+            if(foundUser) {
+                const matches = this.validatePassword(user.password, foundUser.password);
+                if(matches) {
+                    const payload: UserI = await this.findeOne(foundUser.id);
+                    return this.authService.generateJwt(payload);
                 } else {
-                    throw new HttpException('Email is already in use', HttpStatus.CONFLICT)
+                    throw new HttpException('Login was not successfull, wrong credentials', HttpStatus.UNAUTHORIZED)
                 }
-            })
-        )
-    }
 
-    findAll(options: IPaginationOptions): Observable<Pagination<UserI>> {
-        return from(paginate<UserEntity>(this.userRepository, options))
-    }
+            } else {
+                throw new HttpException('Login was not successfull, wrong credentials', HttpStatus.UNAUTHORIZED)
+            }
 
-    async login(user: UserI) {
-        await this.findByEmail(user.email)
-            .then(res => console.log('from login service =====> ', res))
-            .catch(throw new HttpException('User not found', HttpStatus.NOT_FOUND));
-
-      
-
-        // return this.findByEmail(user.email).pipe(
-        //     switchMap((foundUser: UserI) => {
-        //         if (foundUser) {
-        //             return this.validatePassword(user.password, foundUser.password).pipe(
-        //                 switchMap((matches: boolean) => {
-        //                     if (matches) {
-        //                         return this.findeOne(foundUser.id).pipe(
-        //                             switchMap((payload: UserI) => this.authService.generateJwt(payload))
-        //                         )
-        //                     } else {
-        //                         throw new HttpException('Login was not successfull, wrong credentials', HttpStatus.UNAUTHORIZED)
-        //                     }
-
-        //                 })
-        //             )
-        //         } else {
-        //             throw new HttpException('User not found', HttpStatus.NOT_FOUND)
-        //         }
-        //     })
-        // )
+        } catch {
+            throw new HttpException('User not found', HttpStatus.NOT_FOUND)
+        }
     }
 
     async passwordRecovery(user: UserI) {
@@ -122,12 +109,7 @@ export class UserService {
         // )
 
     }
-
-
-
-    // declare all characters
-
-
+    
     generateString(length) {
         const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         let result = ' ';
@@ -139,37 +121,32 @@ export class UserService {
         return result;
     }
 
-
-
-
-
     async findByEmail(email: string) {
         return this.userRepository.findOne({ email }, { select: ['id', 'email', 'username', 'password'] })
     }
 
-    private findeOne(id: number): Observable<UserI> {
-        return from(this.userRepository.findOne({ id }))
+    private async findeOne(id: number): Promise<UserI> {
+        return this.userRepository.findOne({ id })
     }
 
     public getOne(id: number): Promise<UserI> {
         return this.userRepository.findOneOrFail({ id })
     }
 
-    private mailExists(email: string): Observable<boolean> {
-        return from(this.userRepository.findOne({ email })).pipe(
-            map((user: UserI) => {
-                if (user) {
-                    return true
-                } else return false;
-            })
-        )
+    private async mailExists(email: string): Promise<boolean> {
+        const user = this.userRepository.findOne({email});
+        if(user) {
+            return true
+        } else {
+            return false
+        }
     }
 
-    private validatePassword(password: string, storedPasswordHash: string): Observable<any> {
+    private async validatePassword(password: string, storedPasswordHash: string): Promise<any> {
         return this.authService.passwordCompare(password, storedPasswordHash)
     }
 
-    private hashPassword(password: string): Observable<string> {
+    private async hashPassword(password: string): Promise<string> {
         return this.authService.hasPassword(password)
     }
 

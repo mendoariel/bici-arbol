@@ -16,8 +16,6 @@ exports.UserService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const nestjs_typeorm_paginate_1 = require("nestjs-typeorm-paginate");
-const rxjs_1 = require("rxjs");
-const operators_1 = require("rxjs/operators");
 const auth_service_1 = require("../../../auth/service/auth.service");
 const user_entity_1 = require("../../model/user.entity");
 const user_interface_1 = require("../../model/user.interface");
@@ -29,26 +27,46 @@ let UserService = class UserService {
         this.authService = authService;
         this.mailService = mailService;
     }
-    create(newUser) {
-        console.log('into create user service');
-        console.log(newUser);
-        return this.mailExists(newUser.email).pipe(operators_1.switchMap((exists) => {
-            if (!exists) {
-                return this.hashPassword(newUser.password).pipe(operators_1.switchMap((passwordHash) => {
-                    newUser.password = passwordHash;
-                    return rxjs_1.from(this.userRepository.save(newUser)).pipe(operators_1.switchMap((user) => this.findeOne(user.id)));
-                }));
+    async create(newUser) {
+        try {
+            const exist = await this.mailExists(newUser.email);
+            if (!exist) {
+                const passwordHash = await this.hashPassword(newUser.password);
+                newUser.password = passwordHash;
+                const user = await this.userRepository.save(this.userRepository.create(newUser));
+                return this.findeOne(user.id);
             }
             else {
                 throw new common_1.HttpException('Email is already in use', common_1.HttpStatus.CONFLICT);
             }
-        }));
+        }
+        catch (_a) {
+            throw new common_1.HttpException('Email is already in use', common_1.HttpStatus.CONFLICT);
+        }
     }
-    findAll(options) {
-        return rxjs_1.from(nestjs_typeorm_paginate_1.paginate(this.userRepository, options));
+    async findAll(options) {
+        return nestjs_typeorm_paginate_1.paginate(this.userRepository, options);
     }
     async login(user) {
-        await this.findByEmail(user.email).then(res => console.log('from login service =====> ', res));
+        try {
+            const foundUser = await this.findByEmail(user.email.toLocaleLowerCase());
+            if (foundUser) {
+                const matches = this.validatePassword(user.password, foundUser.password);
+                if (matches) {
+                    const payload = await this.findeOne(foundUser.id);
+                    return this.authService.generateJwt(payload);
+                }
+                else {
+                    throw new common_1.HttpException('Login was not successfull, wrong credentials', common_1.HttpStatus.UNAUTHORIZED);
+                }
+            }
+            else {
+                throw new common_1.HttpException('Login was not successfull, wrong credentials', common_1.HttpStatus.UNAUTHORIZED);
+            }
+        }
+        catch (_a) {
+            throw new common_1.HttpException('User not found', common_1.HttpStatus.NOT_FOUND);
+        }
     }
     async passwordRecovery(user) {
         let foundUser;
@@ -70,25 +88,25 @@ let UserService = class UserService {
     async findByEmail(email) {
         return this.userRepository.findOne({ email }, { select: ['id', 'email', 'username', 'password'] });
     }
-    findeOne(id) {
-        return rxjs_1.from(this.userRepository.findOne({ id }));
+    async findeOne(id) {
+        return this.userRepository.findOne({ id });
     }
     getOne(id) {
         return this.userRepository.findOneOrFail({ id });
     }
-    mailExists(email) {
-        return rxjs_1.from(this.userRepository.findOne({ email })).pipe(operators_1.map((user) => {
-            if (user) {
-                return true;
-            }
-            else
-                return false;
-        }));
+    async mailExists(email) {
+        const user = this.userRepository.findOne({ email });
+        if (user) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
-    validatePassword(password, storedPasswordHash) {
+    async validatePassword(password, storedPasswordHash) {
         return this.authService.passwordCompare(password, storedPasswordHash);
     }
-    hashPassword(password) {
+    async hashPassword(password) {
         return this.authService.hasPassword(password);
     }
 };

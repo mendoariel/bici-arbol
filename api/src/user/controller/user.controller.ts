@@ -1,9 +1,5 @@
 import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
-import { IS_EMAIL } from 'class-validator';
 import { Pagination } from 'nestjs-typeorm-paginate';
-import { BehaviorSubject, from, Observable, ObservedValueOf, of } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
-import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { CreateUserDto } from '../model/dto/create-user.dto';
 import { LoginUserDto } from '../model/dto/login-user.dto';
 import { LoginResponseI } from '../model/login-response.interface';
@@ -20,42 +16,34 @@ export class UserController {
     ){}
 
     @Post()
-    create(@Body() createUserDto: CreateUserDto): Observable<UserI> {
-        return this.userHelperService.createUserDtoEntity(createUserDto).pipe(
-            switchMap((user: UserI) => this.userService.create(user))
-        )
+    async create(@Body() createUserDto: CreateUserDto): Promise<UserI> {
+
+        const userEntity:UserI = this.userHelperService.createUserDtoEntity(createUserDto);
+
+        return this.userService.create(userEntity);
     }
 
     @Get()
-    findAll(
+    async findAll(
         @Query('page') page: number = 1,
         @Query('limit') limit: number = 10
-    ):Observable<Pagination<UserI>> {
+    ):Promise<Pagination<UserI>> {
         limit = limit > 100 ? 100 : limit;
         return this.userService.findAll({page, limit, route: 'http://localhost:3000/api/users'});
     }
 
     @Post('login')
-    async login(@Body() loginUserDto: LoginUserDto) {
+    async login(@Body() loginUserDto: LoginUserDto):Promise<LoginResponseI> {
 
-        let userDto = await this.userHelperService.loginUserDto(loginUserDto);
+        const userEntity:UserI = await this.userHelperService.loginUserDto(loginUserDto);
 
+        const jwt: string = await this.userService.login(userEntity); 
 
-        const loginF = this.userService.login(userDto);
-        loginF.then(res => console.log('from user controller ====>>>',res));
-
-        // return this.userHelperService.loginUserDto(loginUserDto).pipe(
-        //     switchMap((user: UserI) => this.userService.login(user).pipe(
-        //         map((jwt: string) => {
-                    
-        //             return {
-        //                 access_token: jwt,
-        //                 token_type: 'JWT',
-        //                 expires_in: 10000
-        //             }
-        //         })
-        //     ))
-        // )
+        return {
+                            access_token: jwt,
+                            token_type: 'JWT',
+                            expires_in: 10000
+                }  
     }
 
     @Post('password-recovery')
