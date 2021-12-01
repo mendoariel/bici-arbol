@@ -25,6 +25,7 @@ export class UserService {
     async create(newUser: UserI): Promise<UserI> {
         try {
             const exist = await this.mailExists(newUser.email);
+
             if(!exist) {
                 const passwordHash = await this.hashPassword(newUser.password);
                 newUser.password = passwordHash;
@@ -45,6 +46,7 @@ export class UserService {
     async login(user: UserI):Promise<string> {
         try {
             const foundUser: UserI = await this.findByEmail(user.email.toLocaleLowerCase());
+            console.log('into login service foundUser ', foundUser);
             if(foundUser) {
                 const matches = this.validatePassword(user.password, foundUser.password);
                 if(matches) {
@@ -109,7 +111,7 @@ export class UserService {
         // )
 
     }
-    
+
     generateString(length) {
         const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         let result = ' ';
@@ -134,7 +136,8 @@ export class UserService {
     }
 
     private async mailExists(email: string): Promise<boolean> {
-        const user = this.userRepository.findOne({email});
+        const user = await this.userRepository.findOne({email});
+        console.log('into user service mailExists ', user);
         if(user) {
             return true
         } else {

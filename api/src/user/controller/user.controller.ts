@@ -37,6 +37,8 @@ export class UserController {
 
         const userEntity:UserI = await this.userHelperService.loginUserDto(loginUserDto);
 
+        console.log('into contrller ', loginUserDto);
+
         const jwt: string = await this.userService.login(userEntity); 
 
         return {

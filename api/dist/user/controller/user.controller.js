@@ -33,6 +33,7 @@ let UserController = class UserController {
     }
     async login(loginUserDto) {
         const userEntity = await this.userHelperService.loginUserDto(loginUserDto);
+        console.log('into contrller ', loginUserDto);
         const jwt = await this.userService.login(userEntity);
         return {
             access_token: jwt,

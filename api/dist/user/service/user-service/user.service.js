@@ -50,6 +50,7 @@ let UserService = class UserService {
     async login(user) {
         try {
             const foundUser = await this.findByEmail(user.email.toLocaleLowerCase());
+            console.log('into login service foundUser ', foundUser);
             if (foundUser) {
                 const matches = this.validatePassword(user.password, foundUser.password);
                 if (matches) {
@@ -95,7 +96,8 @@ let UserService = class UserService {
         return this.userRepository.findOneOrFail({ id });
     }
     async mailExists(email) {
-        const user = this.userRepository.findOne({ email });
+        const user = await this.userRepository.findOne({ email });
+        console.log('into user service mailExists ', user);
         if (user) {
             return true;
         }
