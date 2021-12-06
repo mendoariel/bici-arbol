@@ -50,7 +50,6 @@ let UserService = class UserService {
     async login(user) {
         try {
             const foundUser = await this.findByEmail(user.email.toLocaleLowerCase());
-            console.log('into login service foundUser ', foundUser);
             if (foundUser) {
                 const matches = this.validatePassword(user.password, foundUser.password);
                 if (matches) {
@@ -70,12 +69,33 @@ let UserService = class UserService {
         }
     }
     async passwordRecovery(user) {
-        let foundUser;
-        await this.findByEmail(user.email).then(res => {
-            console.log('into user service password recovery method ====> ', res);
-            foundUser = res;
-        });
-        return foundUser;
+        try {
+            const foundUser = await this.findByEmail(user.email.toLocaleLowerCase());
+            if (foundUser) {
+                return this.sendEmailRecoryPass(foundUser);
+            }
+            else {
+                throw new common_1.HttpException('Usuario sin registro', common_1.HttpStatus.UNAUTHORIZED);
+            }
+        }
+        catch (_a) {
+            throw new common_1.HttpException('User not found', common_1.HttpStatus.NOT_FOUND);
+        }
+    }
+    async sendEmailRecoryPass(user) {
+        let date = new Date();
+        let key = this.generateString(233);
+        user.recoveryPasswordToken = key;
+        user.passTokenExpire = date.toString();
+        this.userRepository.update(user.id, user);
+        try {
+            const sendMailFunciont = await this.mailService.sendUserConfirmation(user, key);
+            return `Se ha enviado una email, con las intrucciones para recuperar tu cuenta a ${user.email}`;
+            console.log('console.log 3', sendMailFunciont);
+        }
+        catch (_a) {
+            throw new common_1.HttpException('Can\'t send this email', common_1.HttpStatus.BAD_REQUEST);
+        }
     }
     generateString(length) {
         const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

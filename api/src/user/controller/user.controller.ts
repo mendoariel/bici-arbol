@@ -49,19 +49,12 @@ export class UserController {
     }
 
     @Post('password-recovery')
-    async passwordRecovery(@Body() user: UserI) {
-        let userResponse;
+    async passwordRecovery(@Body() user: UserI):Promise<string> {
         
-        const userF = this.userService.passwordRecovery(user);
+        const message = await this.userService.passwordRecovery(user);
 
-        await userF.then(res => {
-            userResponse = res;
-            console.log('from user controller ======> ', userResponse);
-            //return userResponse.UserEntity;
-        });
-
-        return userResponse;
-
+        return message;
+       
     }
 
 

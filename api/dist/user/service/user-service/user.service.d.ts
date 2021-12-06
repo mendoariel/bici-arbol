@@ -12,7 +12,8 @@ export declare class UserService {
     create(newUser: UserI): Promise<UserI>;
     findAll(options: IPaginationOptions): Promise<Pagination<UserI>>;
     login(user: UserI): Promise<string>;
-    passwordRecovery(user: UserI): Promise<UserI>;
+    passwordRecovery(user: UserI): Promise<string>;
+    sendEmailRecoryPass(user: any): Promise<string>;
     generateString(length: any): string;
     findByEmail(email: string): Promise<UserEntity>;
     private findeOne;

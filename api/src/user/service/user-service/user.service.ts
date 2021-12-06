@@ -46,7 +46,6 @@ export class UserService {
     async login(user: UserI):Promise<string> {
         try {
             const foundUser: UserI = await this.findByEmail(user.email.toLocaleLowerCase());
-            console.log('into login service foundUser ', foundUser);
             if(foundUser) {
                 const matches = this.validatePassword(user.password, foundUser.password);
                 if(matches) {
@@ -65,51 +64,38 @@ export class UserService {
         }
     }
 
-    async passwordRecovery(user: UserI) {
-        let foundUser: UserI;
+    async passwordRecovery(user: UserI): Promise<string> {
+        try {
+            const foundUser: UserI = await this.findByEmail(user.email.toLocaleLowerCase());
+            if(foundUser) {
+                return this.sendEmailRecoryPass(foundUser);
+                
+            } else {
+                throw new HttpException('Usuario sin registro', HttpStatus.UNAUTHORIZED)
+            }
+        } catch {
+            throw new HttpException('User not found', HttpStatus.NOT_FOUND)
+        }
+
+    }
+
+    async sendEmailRecoryPass(user) {
+        let date = new Date();
+        let key = this.generateString(233);
+
+        user.recoveryPasswordToken = key;
+        user.passTokenExpire = date.toString();
+        this.userRepository.update(user.id, user);
+
         
-        await this.findByEmail(user.email).then(res => {
-            console.log('into user service password recovery method ====> ', res);
-            foundUser = res;
-        });
 
-        return foundUser;
-
-        // let token;
-        // let date;
-        // if (foundUser  !== null) {
-        //     // send email to foundUser email
-        //     // let tokenToRecover;
-        //     token = this.generateString(100);
-        //     date = new Date();
-        //     foundUser.recoveryPasswordToken = token;
-        //     foundUser.passTokenExpire = date.toString();
-        //     this.userRepository.update(foundUser.id, foundUser);
-
-        // } else {
-        //     throw new HttpException('User not found', HttpStatus.NOT_FOUND)
-        // }
-
-        // this.findByEmail(user.email).pipe(
-        //     switchMap((foundUser: UserI) => {
-        //         let token;
-        //         let date;
-        //         if (foundUser) {
-        //             // send email to foundUser email
-        //             // let tokenToRecover;
-        //             token = this.generateString(100);
-        //             date = new Date();
-        //             foundUser.recoveryPasswordToken = token;
-        //             foundUser.passTokenExpire = date.toString();
-        //             this.userRepository.update(foundUser.id, foundUser);
-
-        //         } else {
-        //             throw new HttpException('User not found', HttpStatus.NOT_FOUND)
-        //         }
-        //         await this.mailService.sendUserConfirmation(foundUser, token).catch(err => console.log(err));
-        //     })
-        // )
-
+        try {
+            const sendMailFunciont = await this.mailService.sendUserConfirmation(user, key);
+            return `Se ha enviado una email, con las intrucciones para recuperar tu cuenta a ${user.email}`;
+            console.log('console.log 3',sendMailFunciont)
+        } catch {
+            throw new HttpException('Can\'t send this email', HttpStatus.BAD_REQUEST)
+        }
     }
 
     generateString(length) {

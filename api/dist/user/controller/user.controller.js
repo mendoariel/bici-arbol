@@ -42,13 +42,8 @@ let UserController = class UserController {
         };
     }
     async passwordRecovery(user) {
-        let userResponse;
-        const userF = this.userService.passwordRecovery(user);
-        await userF.then(res => {
-            userResponse = res;
-            console.log('from user controller ======> ', userResponse);
-        });
-        return userResponse;
+        const message = await this.userService.passwordRecovery(user);
+        return message;
     }
 };
 __decorate([

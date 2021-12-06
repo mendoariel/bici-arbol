@@ -19,15 +19,22 @@ let MailService = class MailService {
     }
     async sendUserConfirmation(user, token) {
         const url = `example.com/auth/confirm?token=${token}`;
-        await this.mailerService.sendMail({
-            to: user.email,
-            subject: 'Welcome to Nice App! Confirm your Email',
-            template: './confirmation',
-            context: {
-                name: user.username,
-                url,
-            },
-        });
+        let functionSend;
+        try {
+            functionSend = await this.mailerService.sendMail({
+                to: user.email,
+                subject: 'Welcome to Nice App! Confirm your Email',
+                template: './confirmation',
+                context: {
+                    name: user.username,
+                    url,
+                },
+            });
+            console.log(functionSend);
+        }
+        catch (_a) {
+            throw new common_1.HttpException('Can\'t send this email', common_1.HttpStatus.BAD_REQUEST);
+        }
     }
 };
 MailService = __decorate([
