@@ -49,11 +49,11 @@ export class UserController {
     }
 
     @Post('password-recovery')
-    async passwordRecovery(@Body() user: UserI):Promise<string> {
+    async passwordRecovery(@Body() user: UserI):Promise<any> {
         
         const message = await this.userService.passwordRecovery(user);
 
-        return message;
+        return { message: message };
        
     }
 

@@ -16,6 +16,7 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { ReactiveFormsModule } from '@angular/forms';
 import { WellcomeComponent } from './components/wellcome/wellcome.component';
 import { PasswordRecoveryComponent } from './components/password-recovery/password-recovery.component';
+import { NewPasswordComponent } from './components/new-password/new-password.component';
 
 
 
@@ -24,7 +25,8 @@ import { PasswordRecoveryComponent } from './components/password-recovery/passwo
     LoginComponent,
     RegisterComponent,
     WellcomeComponent,
-    PasswordRecoveryComponent
+    PasswordRecoveryComponent,
+    NewPasswordComponent
 
   ],
   imports: [

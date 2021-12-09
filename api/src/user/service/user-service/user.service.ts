@@ -90,9 +90,8 @@ export class UserService {
         
 
         try {
-            const sendMailFunciont = await this.mailService.sendUserConfirmation(user, key);
+            await this.mailService.sendUserConfirmation(user, key);
             return `Se ha enviado una email, con las intrucciones para recuperar tu cuenta a ${user.email}`;
-            console.log('console.log 3',sendMailFunciont)
         } catch {
             throw new HttpException('Can\'t send this email', HttpStatus.BAD_REQUEST)
         }

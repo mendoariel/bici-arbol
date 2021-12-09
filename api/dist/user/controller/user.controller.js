@@ -43,7 +43,7 @@ let UserController = class UserController {
     }
     async passwordRecovery(user) {
         const message = await this.userService.passwordRecovery(user);
-        return message;
+        return { message: message };
     }
 };
 __decorate([

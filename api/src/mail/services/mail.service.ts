@@ -7,7 +7,8 @@ export class MailService {
   constructor(private mailerService: MailerService) {}
 
   async sendUserConfirmation(user: UserI, token: string) {
-    const url = `example.com/auth/confirm?token=${token}`;
+    const url = process.env.FRONTEND + `/public/new-password?token=${token}`;
+    console.log('into mail service => ', url);
 
     let functionSend;
 
@@ -16,14 +17,12 @@ export class MailService {
         to: user.email,
         // from: '"Support Team" <support@example.com>', // override default from
         subject: 'Welcome to Nice App! Confirm your Email',
-        template: './confirmation', // `.hbs` extension is appended automatically
+        template: './password-recovery', // `.hbs` extension is appended automatically
         context: { // ✏️ filling curly brackets with content
           name: user.username,
           url,
         },
       });
-  
-      console.log(functionSend);
   
     } catch {
       throw new HttpException('Can\'t send this email', HttpStatus.BAD_REQUEST)

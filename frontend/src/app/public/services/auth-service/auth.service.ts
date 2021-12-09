@@ -33,7 +33,7 @@ export class AuthService {
   }
 
   passwordRecovery(user: UserI): Observable<any> {
-    return this.http.post('api/users/password-recovery', user).pipe();
+    return this.http.post('api/users/password-recovery', user);
   }
 
   isLogin() {
