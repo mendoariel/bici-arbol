@@ -21,4 +21,5 @@ export declare class UserService {
     private mailExists;
     private validatePassword;
     private hashPassword;
+    newPassword(token: string, id: number, newPassword: string): Promise<string>;
 }

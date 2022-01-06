@@ -138,5 +138,28 @@ export class UserService {
         return this.authService.hasPassword(password)
     }
 
+    async newPassword(token: string, id: number, newPassword: string): Promise<string> {
+        try {
+            const user: UserI = await this.userRepository.findOne({id}, {select: ['id', 'username', 'email', 'password','recoveryPasswordToken', 'passTokenExpire']});
+            console.log('user.recoveryPasswordToken ===> ', user.recoveryPasswordToken);
+            console.log('token from frontend ===> ', token);
+            if(user.recoveryPasswordToken === token) {
+                console.log('the token match');
+                user.recoveryPasswordToken = '';
+                user.passTokenExpire = '';
+                user.password = newPassword;
+                await this.userRepository.update(user.id, user);
+
+            } else {
+                throw new HttpException('Problem, not match key', HttpStatus.NOT_FOUND)
+            }
+            
+        } catch {
+            throw new HttpException('User not found', HttpStatus.NOT_FOUND)
+        }
+        
+        return 'Password changed'
+    }
+
 
 }

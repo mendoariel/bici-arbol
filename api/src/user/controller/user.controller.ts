@@ -1,5 +1,6 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Post, Query, Res, UseGuards } from '@nestjs/common';
 import { Pagination } from 'nestjs-typeorm-paginate';
+import { Token } from 'nodemailer/lib/xoauth2';
 import { CreateUserDto } from '../model/dto/create-user.dto';
 import { LoginUserDto } from '../model/dto/login-user.dto';
 import { LoginResponseI } from '../model/login-response.interface';
@@ -57,5 +58,11 @@ export class UserController {
        
     }
 
+    @Post('new-password')
+    async newPassword(@Body() body: any):Promise<any> {
+        
+        const message = await this.userService.newPassword(body.token, body.userid, body.newPassword);
 
+        return  HttpStatus.OK;
+    } 
 }

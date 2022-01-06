@@ -45,6 +45,10 @@ let UserController = class UserController {
         const message = await this.userService.passwordRecovery(user);
         return { message: message };
     }
+    async newPassword(body) {
+        const message = await this.userService.newPassword(body.token, body.userid, body.newPassword);
+        return common_1.HttpStatus.OK;
+    }
 };
 __decorate([
     common_1.Post(),
@@ -75,6 +79,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "passwordRecovery", null);
+__decorate([
+    common_1.Post('new-password'),
+    __param(0, common_1.Body()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "newPassword", null);
 UserController = __decorate([
     common_1.Controller('users'),
     __metadata("design:paramtypes", [user_service_1.UserService,

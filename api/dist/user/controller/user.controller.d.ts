@@ -13,4 +13,5 @@ export declare class UserController {
     findAll(page?: number, limit?: number): Promise<Pagination<UserI>>;
     login(loginUserDto: LoginUserDto): Promise<LoginResponseI>;
     passwordRecovery(user: UserI): Promise<any>;
+    newPassword(body: any): Promise<any>;
 }

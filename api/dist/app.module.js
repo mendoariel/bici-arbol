@@ -23,7 +23,7 @@ let AppModule = class AppModule {
     configure(consumer) {
         consumer
             .apply(auth_middleware_1.AuthMiddleware)
-            .exclude({ path: '/api/users', method: common_1.RequestMethod.POST }, { path: '/api/users/login', method: common_1.RequestMethod.POST }, { path: '/api/users/password-recovery', method: common_1.RequestMethod.POST })
+            .exclude({ path: '/api/users', method: common_1.RequestMethod.POST }, { path: '/api/users/login', method: common_1.RequestMethod.POST }, { path: '/api/users/password-recovery', method: common_1.RequestMethod.POST }, { path: '/api/users/new-password', method: common_1.RequestMethod.POST })
             .forRoutes('');
     }
 };

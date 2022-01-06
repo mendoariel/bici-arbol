@@ -36,6 +36,11 @@ export class AuthService {
     return this.http.post('api/users/password-recovery', user);
   }
 
+  newPassword(token: string, userid: number, newPassword: string): Observable<any> {
+    const body = { token, userid, newPassword }
+    return this.http.post('api/users/new-password', body)
+  }
+
   isLogin() {
     if(localStorage.getItem('bici-arbol_app')) {
       return true;

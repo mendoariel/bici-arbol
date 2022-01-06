@@ -130,6 +130,27 @@ let UserService = class UserService {
     async hashPassword(password) {
         return this.authService.hasPassword(password);
     }
+    async newPassword(token, id, newPassword) {
+        try {
+            const user = await this.userRepository.findOne({ id }, { select: ['id', 'username', 'email', 'password', 'recoveryPasswordToken', 'passTokenExpire'] });
+            console.log('user.recoveryPasswordToken ===> ', user.recoveryPasswordToken);
+            console.log('token from frontend ===> ', token);
+            if (user.recoveryPasswordToken === token) {
+                console.log('the token match');
+                user.recoveryPasswordToken = '';
+                user.passTokenExpire = '';
+                user.password = newPassword;
+                await this.userRepository.update(user.id, user);
+            }
+            else {
+                throw new common_1.HttpException('Problem, not match key', common_1.HttpStatus.NOT_FOUND);
+            }
+        }
+        catch (_a) {
+            throw new common_1.HttpException('User not found', common_1.HttpStatus.NOT_FOUND);
+        }
+        return 'Password changed';
+    }
 };
 UserService = __decorate([
     common_1.Injectable(),

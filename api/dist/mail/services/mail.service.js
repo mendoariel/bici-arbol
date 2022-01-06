@@ -18,13 +18,12 @@ let MailService = class MailService {
         this.mailerService = mailerService;
     }
     async sendUserConfirmation(user, token) {
-        const url = process.env.FRONTEND + `/public/new-password?token=${token}`;
-        console.log('into mail service => ', url);
+        const url = process.env.FRONTEND + `/public/new-password?token=${token}&userid=${user.id}`;
         let functionSend;
         try {
-            functionSend = await this.mailerService.sendMail({
+            await this.mailerService.sendMail({
                 to: user.email,
-                subject: 'Welcome to Nice App! Confirm your Email',
+                subject: 'Soliciutd de cambio de contraseña para bici arbol',
                 template: './password-recovery',
                 context: {
                     name: user.username,

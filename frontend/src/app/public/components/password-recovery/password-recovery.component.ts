@@ -36,7 +36,7 @@ export class PasswordRecoveryComponent implements OnInit {
           this.snackBar.open('Hemos enviado un email, con las intrucciones para recuperar su contraseña', 'Cerrar', {
             duration: 8000, horizontalPosition: 'right', verticalPosition: 'top'});
 
-          this.router.navigate(['public/login']);
+          this.router.navigate(['public/welcome']);
         },
         (err) => {
           
